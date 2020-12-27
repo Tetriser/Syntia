@@ -1,0 +1,22 @@
+{
+    "name": "syntia",
+    "version": "4.0.0",
+    "description": "A multi-functional Discord bot made specifically for Tetriser's Realm Discord.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tetriser/Syntia.git"
+    },
+    "author": "Tetriser",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Tetriser/Syntia/issues"
+    },
+    "homepage": "https://github.com/Tetriser/Syntia#readme",
+    "dependencies": {
+        "discord.js": "^12.5.1"
+    }
+}
