@@ -1,7 +1,7 @@
 const {Client, Intents, Collection} = require("discord.js");
 const fs = require("fs");
 const { config } = require("process");
-const { token, ownerID, welcomeChannelID } = require("./config.json");
+const { token, welcomeChannelID } = require("./config.json");
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]

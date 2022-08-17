@@ -1,9 +1,5 @@
 {
     "token": "",
-    "botlog": "",
-    "ownerID": "",
-    "clientId": "",
-    "guildId": "",
     "welcomeChannelID": "",
     "logDeletion": true
 }
