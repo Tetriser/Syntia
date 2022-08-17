@@ -1,13 +1,12 @@
-const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
+
 module.exports = {
-	name: "decide",
-    requireArgument: true,
-    ownerOnly: false,
-    modsOnly: false,
-	server: true,
-	syntax: "<your thoughts>",
-    description: "Let Syntia decide your thoughts.",
-    execute(message, args) {
+	data: new SlashCommandBuilder()
+		.setName('decide')
+		.setDescription("Let Syntia decide your thoughts.")
+		.addStringOption(option => option.setName("thought").setDescription("Your thought.").setRequired(true)),
+	async execute(interaction) {
 		var decidal = [
 			'Good idea.',
 			'That should work.',
@@ -34,7 +33,7 @@ module.exports = {
 		var decidalNum;
 		var decidalcolor;
 	
-		let thought = args.slice(0).join(" ");
+		let thought = interaction.options.getString("thought");
 	
 		if(thought == "")
 		{
@@ -61,11 +60,11 @@ module.exports = {
 			decidalcolor = 2;
 		}
 	
-		const emb = new Discord.MessageEmbed()
+		const emb = new MessageEmbed()
 		.setTitle(thought)
 		.setDescription(decidal[decidalNum])
 		.setColor(decidalcolors[decidalcolor])
-	
-		message.channel.send(emb);
-	}
-}
+
+		await interaction.reply({embeds: [emb]});
+    },
+};

@@ -1,38 +1,30 @@
-const Discord = require("discord.js")
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 const pkg = require("../package.json")
-const config = require("../config.json")
 
 module.exports = {
-    name: "about",
-    requireArgument: false,
-    ownerOnly: false,
-    description: 'Version info, changelog and more.',
-    execute(message) {
-        const emb = new Discord.MessageEmbed()
+	data: new SlashCommandBuilder()
+		.setName('about')
+		.setDescription("Shows the changelog and version of the bot."),
+	async execute(interaction) {
+        const emb = new MessageEmbed()
         .setTitle("Syntia")
         .setDescription("Version " + pkg.version)
         .setColor(0xf442aa)
-        .setThumbnail(message.client.user.avatarURL())
+        .setThumbnail(interaction.client.user.avatarURL())
         
         .addField("Changes",
-        "- All-new simplified command handler" + "\n" + 
-        "- All-new help system" + "\n" + 
-        "- `images` has been removed in favor of the new help system" + "\n" + 
+        "- Goodbye, prefixes! Hello, **slash commands**!\n" + 
         "- Updated Discord.js to " + pkg.dependencies['discord.js'])
         
         .addField("Changed commands",
-        "```diff\n" + "+ " + config.prefix + "speak\n" + 
-        "+ " + config.prefix + "entrance\n" + 
-        "+ " + config.prefix + "prune\n" +  
-        "+ " + config.prefix + "impostor\n" + 
-        "+ " + config.prefix + "getreal\n" + 
-        "- " + config.prefix + "images" + 
-        "# All images commands" + "\n```"
+        "- __again__, __argh__, __getreal__, __man__, __oof__, __sourceerror__, __speen__ and __watchout__ have been moved to the new slash command, __memedispenser__ as subcommands, alongside two new subcommands, __bayoenthemkneecaps__ and __rage__.\n" +
+        "- - In addition, __speen__ and __getreal__ have some new images in the mix. Try getting them all.\n" +
+        "- __smitty__ and __milly__ have been moved to the new slash command, __dropple__ as subcommands, alongside some new ones.\n" +
+        "- - A few other meme commands may eventually return into the slash command.\n" +
+        "- __entrance__ now has a sister or opposite command, __goodbye__.\n"
         , true)
-        
-        message.channel.send(emb)
-        .catch(error => {
-            return;
-        })
+
+        await interaction.reply({ embeds: [ emb ] });
     },
-}
+};

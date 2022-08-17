@@ -1,19 +1,18 @@
-const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-    name: "ping",
-    requireArgument: false,
-    ownerOnly: false,
-    modsOnly: false,
-    server: true,
-    description: "Is this bot work? Check the ping between this bot and Discord.",
-    execute(message, args) {
-        const emb = new Discord.MessageEmbed()
+	data: new SlashCommandBuilder()
+		.setName('ping')
+		.setDescription('Play ping-pong with Syn- I mean, calculate the rates between the bot and Discord.'),
+	async execute(interaction) {
+        const emb = new MessageEmbed()
         .setTitle('Score! 🏓')
         .setDescription('I mean, pong!')
         .setColor(0xFF5000)
-        .addField('Latency', message.client.ping.toString() + 'ms')
+        .addField('Client Latency', Date.now() - interaction.createdTimestamp + 'ms')
+        .addField('API Latency', Math.round(interaction.client.ws.ping) + 'ms')
 
-        message.channel.send(emb);
-    }
-}
+        await interaction.reply({ embeds: [ emb ] });
+	},
+};

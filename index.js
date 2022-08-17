@@ -1,87 +1,82 @@
-const Discord = require("discord.js");
+const {Client, Intents, Collection} = require("discord.js");
 const fs = require("fs");
-const {prefix, token, ownerID, modID} = require("./config.json");
+const { config } = require("process");
+const { token, ownerID, welcomeChannelID } = require("./config.json");
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
-const cooldowns = new Discord.Collection();
+const client = new Client({
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]
+})
+client.commands = new Collection();
 
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
     const commandFile = require(`./commands/${file}`);
-    client.commands.set(commandFile.name, commandFile, commandFile.category);
-    console.log("Added " + commandFile.name + " into the command directory.");
+    client.commands.set(commandFile.data.name, commandFile);
+    console.log("Added " + commandFile.data.name + " into the command directory.");
 }
 
-client.once('ready', () => {
-	console.log("I'm ready!");
-    console.log("Avatar: " + client.user.avatarURL())
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+	const event = require(`./events/${file}`);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	const command = client.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try
+    {
+		await command.execute(interaction);
+	}
+    
+    catch (error)
+    {
+		console.error(error);
+		await interaction.reply
+        (
+            {
+                content: "There\'s an issue with the command, sorry about that.\n```\n" + error + "```", ephemeral: true
+            }
+        );
+	}
 });
 
-client.on('message', message => {
-	if (!message.content.startsWith(prefix) || message.author.bot) {
-        return;
-    }
-
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const commandName = args.shift().toLowerCase();
-
-    const command = client.commands.get(commandName)
-        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-    if(!command) {
-        return;
-    }
-    
-    if(command.ownerOnly && message.author.id != ownerID){
-        return message.reply("only my owner can use that command. ❌")
-    }
-
-    if(command.server && message.channel.type == "dm"){
-        return message.reply("you cannot use that command in DMs. ✋")
-    }
-
-    if (command.modsOnly && !message.member.roles.cache.get(modID)) {
-        return message.reply("only moderators can use that command. 🚫")
-    }
-
-    let mn = message.mentions.users.first()
-
-    if(mn){
-        console.log(mn.username + " has been mentioned.")
-    }
-
-    if(command.requireArgument && !args.length){
-        return;
-    }
-
-    if (!cooldowns.has(command.name)) {
-        cooldowns.set(command.name, new Discord.Collection());
-    }
-    
-    const now = Date.now();
-    const timestamps = cooldowns.get(command.name);
-    const cooldownAmount = (command.cooldown || 3) * 1000;
-    
-    if (timestamps.has(message.author.id)) {
-        const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-        if (now < expirationTime) {
-            const timeLeft = (expirationTime - now) / 1000;
-            return message.reply("please calm down! You can use `" + command.name + "` again in " + timeLeft + "seconds.")
-        }
-    }
-
-	try {
-		command.execute(message, args);
-    }
-    
-    catch (error) {
-		console.error(error);
-        message.channel.send("There seems to be a problem processing that command, sorry about that...\n\n"
-        + "```\n" + error + "\n```");
+client.on('messageCreate', message => {
+	if(message.author.bot) {
+		return;
 	}
+
+	const args = message.content.split(/ +/g);
+	if(args[0] == ">say") {
+		if(message.mentions.channels.size == 0) {
+			console.log("No channels are provided!");
+			return;
+		}
+
+		const msg = args.slice(2).join(" ");
+		message.guild.channels.cache.get(message.mentions.channels.first().id)
+		.send(msg);
+	}
+});
+
+client.on('guildMemberAdd', member => {
+	member.guild.channels.cache.get(welcomeChannelID)
+	.send("<@" + member.id + "> has arrived! Open the gates!");
+});
+
+client.on('guildMemberRemove', member => {
+	member.guild.channels.cache.get(welcomeChannelID)
+	.send("**" + member.user.username + "** left the realm.");
 });
 
 client.login(token);

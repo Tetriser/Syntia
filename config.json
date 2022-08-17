@@ -1,7 +1,9 @@
 {
-    "prefix": "s!",
     "token": "",
+    "botlog": "",
     "ownerID": "",
-    "modID": "",
-    "botlog": ""
+    "clientId": "",
+    "guildId": "",
+    "welcomeChannelID": "",
+    "logDeletion": true
 }
