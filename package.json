@@ -1,6 +1,6 @@
 {
     "name": "syntia",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "description": "A multi-functional Discord bot made specifically for Tetriser's Realm Discord.",
     "main": "index.js",
     "scripts": {
@@ -17,9 +17,8 @@
     },
     "homepage": "https://github.com/Tetriser/Syntia#readme",
     "dependencies": {
-        "@discordjs/builders": "^0.9.0",
-        "@discordjs/rest": "^0.1.0-canary.0",
-        "discord-api-types": "^0.25.2",
-        "discord.js": "^13.10.2"
+        "@discordjs/rest": "^1.1.0",
+        "@napi-rs/canvas": "^0.1.29",
+        "discord.js": "^14.3.0"
     }
 }

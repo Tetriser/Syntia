@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -60,7 +59,7 @@ module.exports = {
 			decidalcolor = 2;
 		}
 	
-		const emb = new MessageEmbed()
+		const emb = new EmbedBuilder()
 		.setTitle(thought)
 		.setDescription(decidal[decidalNum])
 		.setColor(decidalcolors[decidalcolor])

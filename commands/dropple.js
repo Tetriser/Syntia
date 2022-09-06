@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -43,7 +42,7 @@ module.exports = {
                 break;
         }
     
-        emb = new MessageEmbed()
+        emb = new EmbedBuilder()
         .setTitle(greet)
         .setImage(img)
 
